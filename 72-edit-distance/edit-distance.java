@@ -1,35 +1,27 @@
 class Solution {
     public int minDistance(String word1, String word2) {
-        int m = word1.length();
-        int n = word2.length();
-
-        int[][] dp = new int[m + 1][n + 1];
-
-        // Convert empty word1 to word2
-        for (int j = 0; j <= n; j++)
-            dp[0][j] = j;
-
-        // Convert word1 to empty word2
-        for (int i = 0; i <= m; i++)
-            dp[i][0] = i;
-
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-
-                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = 1 + Math.min(
-                        dp[i - 1][j], 
-                        Math.min(
-                            dp[i][j - 1],
-                            dp[i - 1][j - 1]
-                        )
-                    );
-                }
-            }
+        int n=word1.length();
+        int m=word2.length();
+        Integer dp[][]=new Integer[n][m];
+        return helper(dp,n-1,m-1,word1,word2);
+        
+    }
+    public static int helper(Integer dp[][],int n,int m,String word1,String word2){
+        if(n<0){
+            return m+1;
         }
-
-        return dp[m][n];
+        if(m<0){
+            return n+1;
+        }
+        if(dp[n][m]!=null){
+            return dp[n][m];
+        }
+        if(word1.charAt(n)==word2.charAt(m)){
+            return dp[n][m]=helper(dp,n-1,m-1,word1,word2);
+        }
+        int insert=helper(dp,n-1,m,word1,word2);
+        int delete=helper(dp,n,m-1,word1,word2);
+        int replace=helper(dp,n-1,m-1,word1,word2);
+        return dp[n][m]=1+Math.min(insert,Math.min(delete,replace));
     }
 }
